@@ -42,7 +42,7 @@ def readInput(filename):
     # Process third line
     letters = {}
     edges = []
-    letters_arr = []
+    lettersArr = []
     added = 0
 
     for chunk in line: # a chunk refers to a connection in string form
@@ -53,12 +53,12 @@ def readInput(filename):
         if node1 not in letters:
             letters[node1] = added
             added += 1
-            letters_arr.append(node1)
+            lettersArr.append(node1)
 
         if node2 not in letters:
             letters[node2] = added
             added += 1
-            letters_arr.append(node2)
+            lettersArr.append(node2)
 
         edges.append([letters[node1], letters[node2], cost])
 
@@ -66,17 +66,17 @@ def readInput(filename):
     if startNodeName not in letters:
         letters[startNodeName] = added
         added += 1
-        letters_arr.append(startNodeName)
+        lettersArr.append(startNodeName)
 
     if endNodeName not in letters:
         letters[endNodeName] = added
         added += 1
-        letters_arr.append(endNodeName)
+        lettersArr.append(endNodeName)
 
     startNode = letters[startNodeName]
     endNode = letters[endNodeName]
 
-    return startNode, endNode, edges, letters_arr
+    return startNode, endNode, edges, lettersArr
 
 # starting node, ending node, edges all in 0-indexed form
 def question2Main(startingNode, endingNode, edges, n):
@@ -139,8 +139,8 @@ def question2Main(startingNode, endingNode, edges, n):
         return lowestCost, lowestPath
     return -1, ""
 
-def to_human_readable(best_path, node_names):
-    return ', '.join([f'{node_names[best_path[i]]}->{node_names[best_path[i+1]]}' for i in range(len(best_path) - 1)])
+def toHumanReadable(bestPath, nodeNames):
+    return ', '.join([f'{nodeNames[bestPath[i]]}->{nodeNames[bestPath[i+1]]}' for i in range(len(bestPath) - 1)])
 
 
 import glob
@@ -160,7 +160,7 @@ if __name__ == '__main__':
 
         basename = os.path.basename(filename)
         with open(os.path.join('output', basename[:basename.index('.')] + '.out'), 'w') as f:
-            s = to_human_readable(path, letterMap)
+            s = toHumanReadable(path, letterMap)
             if cost == -1:
                 f.write(f'Best path: []\nCost: -1')
                 print(f'\n{filename}\nBest path: []\nCost: -1\n')
