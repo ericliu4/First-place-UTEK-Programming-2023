@@ -1,0 +1,4 @@
+Starting intersection: "a"
+Ending intersection: "d"
+maxTime= 2min
+a->b ($4, 3 min cooldown) , b->d ($5, 10 min cooldown) , c->d ($3, 9 min cooldown) , d->a ($4, 7 min cooldown) , a->c ($4, 1 min cooldown) , c->b ($1, 1 min cooldown)
