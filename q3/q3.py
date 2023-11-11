@@ -49,7 +49,7 @@ def readInput(filename):
     # Process third line
     letters = {}
     edges = []
-    letters_arr = []
+    lettersArr = []
     added = 0
 
     for i in range(len(line) // 2):
@@ -66,12 +66,12 @@ def readInput(filename):
         if node1 not in letters:
             letters[node1] = added
             added += 1
-            letters_arr.append(node1)
+            lettersArr.append(node1)
 
         if node2 not in letters:
             letters[node2] = added
             added += 1
-            letters_arr.append(node2)
+            lettersArr.append(node2)
 
         edges.append([letters[node1], letters[node2], cost, t])
 
@@ -79,17 +79,17 @@ def readInput(filename):
     if startNodeName not in letters:
         letters[startNodeName] = added
         added += 1
-        letters_arr.append(startNodeName)
+        lettersArr.append(startNodeName)
 
     if endNodeName not in letters:
         letters[endNodeName] = added
         added += 1
-        letters_arr.append(endNodeName)
+        lettersArr.append(endNodeName)
 
     startNode = letters[startNodeName]
     endNode = letters[endNodeName]
 
-    return startNode, endNode, maxTime, edges, letters_arr
+    return startNode, endNode, maxTime, edges, lettersArr
 
 
 def question3Main(startingNode, endingNode, maxTime, edges, n):
@@ -139,13 +139,13 @@ def question3Main(startingNode, endingNode, maxTime, edges, n):
                 seen[(neighbor, nextMask)] = {}
 
             # Loop over values in seen[(neighbor, nextMask)] to see if we have a valid point
-            is_better = True
+            isBetter = True
             for key, val in seen[(neighbor, nextMask)].items(): # key => time, val => cost
                 if newWeight >= val and newTime >= key: # better path exists already
-                    is_better = False
+                    isBetter = False
                     break
             
-            if is_better: # update seen
+            if isBetter: # update seen
                 currPath.append(neighbor)
                 seen[(neighbor, nextMask)][newTime] = newWeight
                 queue.append((neighbor, nextMask, newWeight, newTime, copy.copy(currPath)))
@@ -155,8 +155,8 @@ def question3Main(startingNode, endingNode, maxTime, edges, n):
         return lowestCost, lowestPath, lowestTime
     return -1, "", ""
 
-def to_human_readable(best_path, node_names):
-    return ', '.join([f'{node_names[best_path[i]]}->{node_names[best_path[i+1]]}' for i in range(len(best_path) - 1)])
+def toHumanReadable(bestPath, nodeNames):
+    return ', '.join([f'{nodeNames[bestPath[i]]}->{nodeNames[bestPath[i+1]]}' for i in range(len(bestPath) - 1)])
 
 
 import glob
@@ -176,7 +176,7 @@ if __name__ == '__main__':
 
         basename = os.path.basename(filename)
         with open(os.path.join('output', basename[:basename.index('.')] + '.out'), 'w') as f:
-            s = to_human_readable(path, letterMap)
+            s = toHumanReadable(path, letterMap)
             if cost == -1:
                 f.write(f'Best path: []\nCost: -1\nTime: -1\n')
                 print(f'\n{filename}\nBest path: []\nCost: -1\nTime: -1\n')
