@@ -78,45 +78,63 @@ def readInput(filename):
 
     return startNode, endNode, edges, letters_arr
 
-
+# starting node, ending node, edges all in 0-indexed form
 def question2Main(startingNode, endingNode, edges, n):
-    # Initialize graph
+    # uses a queue to traverse the graph
+
+    # Initialize ajacency list structure: {node1: [node2, 'cost to go to node2']}
     graph = collections.defaultdict(list)
     for node1, node2, cost in edges:
         graph[node1].append([node2, cost])
 
-    # Initialize variables
+    # lowestCost, lowestPath updated when a possible solution is reached
+    # possible solution: every single node reached and current node is endingNode
+    # if lowestCost stays as float('inf), then there is no possible path from start to end
     lowestCost = float('inf')
     lowestPath = []
-    queue = collections.deque()
+
+    # bit mask for starting node
     start = 1 << startingNode
+
     pathStart = []
     pathStart.append(startingNode)
+    # queue used for breadth first search
+    # queue: (currentNode, currentBitMask)
+    queue = collections.deque()
     queue.append((startingNode, start, 0, pathStart))
+    # ending mask if n = 5, (11111) this means every node has been visited
     end = (1 << n) - 1 
+
     seen = collections.defaultdict(int)
     
     # BFS with bitmasking
     while queue:
         currNode, currMask, weight, currPath = queue.popleft()
-        #print(currNode, bin(currMask), weight)
-        #print(currPath)
+
+        #if all nodes have been reached and current node is endnode
         if currMask == end and currNode == endingNode:
             if lowestCost > weight:
                 lowestCost = weight
                 lowestPath = currPath
             continue
         
+        #loop through all neighbors of current node (in ajacency list)
         for neighbor, edgeWeight in graph[currNode]:
             neighborBit = 1 << neighbor
+            # OR bit manipulation
             nextMask = currMask | neighborBit
             newWeight = weight + edgeWeight
+            # if node already visited and newCost is more, then will skip as this will not
+            # bring us the optimal solution
             if ((neighbor, nextMask) not in seen) or newWeight < seen[(neighbor, nextMask)]:
                 seen[(neighbor, nextMask)] = newWeight 
+                # use back tracking to track path of visited nodes
                 currPath.append(neighbor)
-                seen[(neighbor, nextMask)] = newWeight
                 queue.append((neighbor, nextMask, newWeight, copy.copy(currPath)))
                 currPath.pop()
+
+    # if lowestCost still equals float('inf), then no possible path from start to end exists
+    # otherwise, return the cost and path 
     if lowestCost != float('inf'):
         return lowestCost, lowestPath
     return -1, ""
@@ -129,6 +147,17 @@ import glob
 import os
 
 if __name__ == '__main__':
+    #take input file
+    file = "a.in"
+    startNode, endNode, edgesList, letterMap = read_input(file)
+
+
+    cost, path = question2Main(startNode, endNode, edgesList, len(letterMap))
+    #print("\n\n")
+    s = to_human_readable(path, letterMap)
+    print(f'Best path: {s}')
+    print(f'Cost: ${cost}')
+    #print("\n\n")
 
     filenames = glob.glob('input/*')
     
