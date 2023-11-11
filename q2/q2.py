@@ -29,7 +29,7 @@ def parseForInt(s):
 
 def readInput(filename):
 
-    with open(filename, 'r',  encoding='utf-8') as f:
+    with open(filename, 'r', encoding='utf-8') as f:
         # Parse first line
         line = f.readline().strip()
         startNodeName = getValueInQuotes(line)

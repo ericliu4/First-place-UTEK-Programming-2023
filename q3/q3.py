@@ -1,53 +1,95 @@
 import collections
 import copy
 
-def read_input(filename):
-    with open(filename, 'r') as f:
+# Gets first value in quotations
+def getValueInQuotes(s):
+    res = ''
+    opened = False
+    openingChars = ['"', "'", '“']
+    closingChars = ['"', "'", '”']
+    for char in s:
+        if not opened and char in openingChars:
+            opened = True
+            continue
+        if opened and char in closingChars:
+            opened = False
+        if opened:
+            res += char
+    return res
+
+# Get int value, ignoring anything that comes after an int
+def parseForInt(s):
+    res = ''
+    for char in s:
+        if char.isdigit():
+            res += char
+        else:
+            return int(res)
+    return int(res)
+
+
+def readInput(filename):
+
+    with open(filename, 'r', encoding='utf-8') as f:
+        # Parse first line
         line = f.readline().strip()
-        start_node = line[line.index('"')+1:-1]
+        startNodeName = getValueInQuotes(line)
+        # Parse second line
         line = f.readline().strip()
-        end_node = line[line.index('"')+1:-1]
+        endNodeName = getValueInQuotes(line)
+        # Parse third line
         line = f.readline().strip()
-        maxTime = int(line[line.index('=')+2:-3])
-        line = f.readline().strip().split(' , ')
+        index = 0
+        while not line[index].isdigit():
+            index += 1
+        maxTime = parseForInt(line[index:])
+        # Read third line
+        line = f.readline().strip().split(',') # two elements combine to form one entry
+    
+    # Process third line
     letters = {}
-    parsed = []
+    edges = []
     letters_arr = []
     added = 0
 
-    for chunk in line:
-        chunk = chunk.strip()
-        index = len(chunk) - 1
-
-        while chunk[index] != ',':
-            index -= 1
-        cooldown = int(chunk[index + 2:chunk[index+2:].index(' ') + index + 2])
-        comma_index = index
-
-        while chunk[index] != '$':
-            index -= 1
-        cost = int(chunk[index+1:comma_index])
-        dollar_index = index
-
-        while chunk[index] != '>':
-            index -=  1
-        node2 = chunk[index+1:dollar_index-2]
-        node1 = chunk[:index-1]
+    for i in range(len(line) // 2):
+        chunk1 = line[2*i]
+        chunk2 = line[2*i + 1]
+        node1 = chunk1.split('->')[0].strip()
+        node2 = chunk1.split('->')[1].split('(')[0].strip()
+        cost = parseForInt(chunk1.split('$')[1])
+        index = 0
+        while not chunk2[index].isdigit():
+            index += 1
+        t = parseForInt(chunk2[index:])
 
         if node1 not in letters:
             letters[node1] = added
             added += 1
             letters_arr.append(node1)
+
         if node2 not in letters:
             letters[node2] = added
             added += 1
             letters_arr.append(node2)
 
-        parsed.append([letters[node1], letters[node2], cost, cooldown])
+        edges.append([letters[node1], letters[node2], cost, t])
 
-    start_index = letters[start_node]
-    end_index = letters[end_node]
-    return start_index, end_index, maxTime, parsed, letters_arr
+    # Account for the case where start node or end node is an island
+    if startNodeName not in letters:
+        letters[startNodeName] = added
+        added += 1
+        letters_arr.append(startNodeName)
+
+    if endNodeName not in letters:
+        letters[endNodeName] = added
+        added += 1
+        letters_arr.append(endNodeName)
+
+    startNode = letters[startNodeName]
+    endNode = letters[endNodeName]
+
+    return startNode, endNode, maxTime, edges, letters_arr
 
 
 def question3Main(startingNode, endingNode, maxTime, edges, n):
@@ -117,25 +159,23 @@ def to_human_readable(best_path, node_names):
     return ', '.join([f'{node_names[best_path[i]]}->{node_names[best_path[i+1]]}' for i in range(len(best_path) - 1)])
 
 
+import glob
+import os
+
 if __name__ == '__main__':
-    #take input file
-    file = "inputs/a3.in"
-    startNode, endNode, maxTime, edgesList, letterMap = read_input(file)
-    #print(startNode)
-    #print(endNode)
-    #print(edgesList)
-    #print(letterMap)
-    #print(len(letterMap))
-    #error checking in main function
-    #check if only 1 node
-    #print("\n\n")
 
+    filenames = glob.glob('input/*')
+    
+    if not os.path.isdir('output'):
+        os.mkdir('output')
+    
+    for filename in filenames:
 
-    cost, path, travelTime = question3Main(startNode, endNode, maxTime, edgesList, len(letterMap))
-    #print("\n\n")
-    s = to_human_readable(path, letterMap)
-    print(f'Best path: {s}')
-    print(f'Cost: ${cost}')
-    print(f'Time: {travelTime}')
-    #print("\n\n")
+        startNode, endNode, maxTime, edgesList, letterMap = readInput(filename)
+        cost, path, totalTime = question3Main(startNode, endNode, maxTime, edgesList, len(letterMap))
 
+        basename = os.path.basename(filename)
+        with open(os.path.join('output', basename[:basename.index('.')] + '.out'), 'w') as f:
+            s = to_human_readable(path, letterMap)
+            f.write(f'Best path: {s}\nCost: ${cost}\nTime: {totalTime} mins\n')
+            print(f'\n{filename}\nBest path: {s}\nCost: ${cost}\nTime: {totalTime} mins\n')
