@@ -38,7 +38,6 @@ def read_input(filename):
 
     start_index = letters[start_node]
     end_index = letters[end_node]
-#startNode, endNode, edgesList, letterMap = read_input(file)
     return start_index, end_index, parsed, letters_arr
 
 
@@ -57,7 +56,7 @@ def question2Main(startingNode, endingNode, edges, n):
     pathStart.append(startingNode)
     queue.append((startingNode, start, 0, pathStart))
     end = (1 << n) - 1 
-    seen = collections.defaultdict(lambda: float('inf'))
+    seen = collections.defaultdict(int)
     
     # BFS with bitmasking
     while queue:
@@ -74,7 +73,8 @@ def question2Main(startingNode, endingNode, edges, n):
             neighborBit = 1 << neighbor
             nextMask = currMask | neighborBit
             newWeight = weight + edgeWeight
-            if newWeight < seen[(neighbor, nextMask)]:
+            if ((neighbor, nextMask) not in seen) or newWeight < seen[(neighbor, nextMask)]:
+                seen[(neighbor, nextMask)] = newWeight 
                 currPath.append(neighbor)
                 seen[(neighbor, nextMask)] = newWeight
                 queue.append((neighbor, nextMask, newWeight, copy.copy(currPath)))
