@@ -1,0 +1,2 @@
+Best path: e->k, k->m, m->n, n->k, k->d, d->e
+Cost: $24
