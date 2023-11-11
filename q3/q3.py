@@ -177,5 +177,9 @@ if __name__ == '__main__':
         basename = os.path.basename(filename)
         with open(os.path.join('output', basename[:basename.index('.')] + '.out'), 'w') as f:
             s = to_human_readable(path, letterMap)
-            f.write(f'Best path: {s}\nCost: ${cost}\nTime: {totalTime} mins\n')
-            print(f'\n{filename}\nBest path: {s}\nCost: ${cost}\nTime: {totalTime} mins\n')
+            if cost == -1:
+                f.write(f'Best path: []\nCost: -1\nTime: -1\n')
+                print(f'\n{filename}\nBest path: []\nCost: -1\nTime: -1\n')
+            else:
+                f.write(f'Best path: {s}\nCost: ${cost}\nTime: ${totalTime} mins\n')
+                print(f'\n{filename}\nBest path: {s}\nCost: ${cost}\nTime: {totalTime} mins\n')
