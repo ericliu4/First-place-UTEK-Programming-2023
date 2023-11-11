@@ -1,15 +1,15 @@
 # This function will take in a filename and output an adjacency list and node names
-def read_input(filename):
+def readInput(filename):
 
     with open(filename, 'r') as f:
         line = f.read().strip()
 
     chunks = line.split(',') # Here each chunk represents one connection (string)
 
-    name_to_index = {}
+    nameToIndex = {}
     names = []
-    node_count = 0
-    adj_list = []
+    nodeCount = 0
+    adjList = []
 
     for chunk in chunks:
 
@@ -17,60 +17,60 @@ def read_input(filename):
         name1 = nodes[0].strip()
         name2 = nodes[1].strip()
 
-        if name1 not in name_to_index:
-            name_to_index[name1] = node_count
-            node_count += 1
-            adj_list.append([])
+        if name1 not in nameToIndex:
+            nameToIndex[name1] = nodeCount
+            nodeCount += 1
+            adjList.append([])
             names.append(name1)
 
-        if name2 not in name_to_index:
-            name_to_index[name2] = node_count
-            node_count += 1
-            adj_list.append([])
+        if name2 not in nameToIndex:
+            nameToIndex[name2] = nodeCount
+            nodeCount += 1
+            adjList.append([])
             names.append(name2)
         
-        adj_list[name_to_index[name1]].append(name_to_index[name2])
+        adjList[nameToIndex[name1]].append(nameToIndex[name2])
     
-    return adj_list, names
+    return adjList, names
 
 
 # This function will take an adjacency list as input and output an adjacency matrix
-def adj_list_to_matrix(adj_list):
+def adjListToMatrix(adjList):
 
-    n = len(adj_list)
+    n = len(adjList)
 
-    adj_matrix = [[0] * n for i in range(n)]
+    adjMatrix = [[0] * n for i in range(n)]
 
     for i in range(n):
-        for dest in adj_list[i]:
-            adj_matrix[i][dest] = 1
+        for dest in adjList[i]:
+            adjMatrix[i][dest] = 1
     
-    return adj_matrix
+    return adjMatrix
 
 
 # This function will take an adjacency matrix and node names and output a pretty matrix
-def get_human_readable(adj_matrix, names):
+def getHumanReadable(adjMatrix, names):
     
-    name_lengths = list(map(lambda x: len(x), names))
-    max_name_length = max(name_lengths)
-    name_buffers = list(map(lambda x: max_name_length - x + 1, name_lengths))
+    nameLengths = list(map(lambda x: len(x), names))
+    maxNameLength = max(nameLengths)
+    nameBuffers = list(map(lambda x: maxNameLength - x + 1, nameLengths))
 
     n = len(names)
 
-    s = ' ' * (max_name_length + 1) + '|' + '|'.join([' ' + names[i] + ' ' for i in range(n)])
-    s += '\n' + '-' * (max_name_length + 1) + '+' + '-'.join(['-' * (name_lengths[i] + 2) for i in range(n)])
+    s = ' ' * (maxNameLength + 1) + '|' + '|'.join([' ' + names[i] + ' ' for i in range(n)])
+    s += '\n' + '-' * (maxNameLength + 1) + '+' + '-'.join(['-' * (nameLengths[i] + 2) for i in range(n)])
     
     for i in range(n):
-        s += '\n' + names[i] + ' ' * name_buffers[i] + '|' + ' '.join([' ' + str(adj_matrix[i][j]) + ' ' * name_lengths[j] for j in range(n)])
+        s += '\n' + names[i] + ' ' * nameBuffers[i] + '|' + ' '.join([' ' + str(adjMatrix[i][j]) + ' ' * nameLengths[j] for j in range(n)])
 
     return s
 
 
 # This function puts together the whole deal (also returns string)
-def print_adjacency_matrix(filename):
-    adj_list, names = read_input(filename)
-    adj_matrix = adj_list_to_matrix(adj_list)
-    s = get_human_readable(adj_matrix, names)
+def printAdjacencyMatrix(filename):
+    adjList, names = readInput(filename)
+    adjMatrix = adjListToMatrix(adjList)
+    s = getHumanReadable(adjMatrix, names)
     print(f'\nAdjacency Matrix for {filename}')
     print(s, end='\n\n')
     return s
@@ -88,7 +88,7 @@ if __name__ == '__main__':
         os.mkdir('output')
     
     for filename in filenames:
-        s = print_adjacency_matrix(filename)
+        s = printAdjacencyMatrix(filename)
         basename = os.path.basename(filename)
         with open(os.path.join('output', basename[:basename.index('.')] + '.out'), 'w') as f:
             f.write(s)
