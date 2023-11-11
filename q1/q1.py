@@ -66,21 +66,29 @@ def get_human_readable(adj_matrix, names):
     return s
 
 
-# This function puts together the whole deal
+# This function puts together the whole deal (also returns string)
 def print_adjacency_matrix(filename):
     adj_list, names = read_input(filename)
     adj_matrix = adj_list_to_matrix(adj_list)
     s = get_human_readable(adj_matrix, names)
     print(f'\nAdjacency Matrix for {filename}')
     print(s, end='\n\n')
+    return s
 
 
 # RUN
 import glob
+import os
 
 if __name__ == '__main__':
 
     filenames = glob.glob('input/*')
     
+    if not os.path.isdir('output'):
+        os.mkdir('output')
+    
     for filename in filenames:
-        print_adjacency_matrix(filename)
+        s = print_adjacency_matrix(filename)
+        basename = os.path.basename(filename)
+        with open(os.path.join('output', basename[:basename.index('.')] + '.out'), 'w') as f:
+            f.write(s)
