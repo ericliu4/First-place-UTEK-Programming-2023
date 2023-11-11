@@ -147,17 +147,6 @@ import glob
 import os
 
 if __name__ == '__main__':
-    #take input file
-    file = "a.in"
-    startNode, endNode, edgesList, letterMap = read_input(file)
-
-
-    cost, path = question2Main(startNode, endNode, edgesList, len(letterMap))
-    #print("\n\n")
-    s = to_human_readable(path, letterMap)
-    print(f'Best path: {s}')
-    print(f'Cost: ${cost}')
-    #print("\n\n")
 
     filenames = glob.glob('input/*')
     

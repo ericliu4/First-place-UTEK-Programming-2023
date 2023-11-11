@@ -1,4 +1,0 @@
-Starting intersection: "a"
-Ending intersection: "d"
-a->b ($4), b->d ($5), c->d ($3), d->a ($4), a->c ($4), d->a ($1), c->b ($1)
-
