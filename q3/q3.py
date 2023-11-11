@@ -182,4 +182,4 @@ if __name__ == '__main__':
                 print(f'\n{filename}\nBest path: []\nCost: -1\nTime: -1\n')
             else:
                 f.write(f'Best path: {s}\nCost: ${cost}\nTime: ${totalTime} mins\n')
-                print(f'\n{filename}\nBest path: {s}\nCost: ${cost}\nTime: {totalTime} mins\n')
+                print(f'\n{filename}\nBest path: {s}\nCost: {cost}\nTime: {totalTime} mins\n')
